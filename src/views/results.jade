@@ -2,7 +2,14 @@ extends layout
 
 block content
 	h2=question
-	each answer in answers
-		p name: #{answer.name}
-		p votes: #{answer.votes}
-	a(href=voteUrl) vote
+	table.table
+		each answer in answers
+			tr
+				td
+					h4=answer.name
+				td
+					if answer.votes === 1
+						h4 #{answer.votes} person
+					else
+						h4 #{answer.votes} people
+	a.btn.btn-primary(href=voteUrl) vote

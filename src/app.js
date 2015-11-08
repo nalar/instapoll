@@ -30,13 +30,32 @@ app.get('/', function (request, response) {
 
 app.post('/createPoll', function (request, response) {
 	var question = request.body.question;
+	if (question.length === 0) {
+		response.redirect('/');
+		return;
+	}
+
 	var answers = (function () {
 		var answers = [];
-		for (var queryKey in request.body) {
-			if (request.body.hasOwnProperty(queryKey)) {
-				if (queryKey.substring(0, 'answer'.length) === 'answer') {
+		for (var formFieldName in request.body) {
+			if (request.body.hasOwnProperty(formFieldName)) {
+				var splitKey = formFieldName.split('_');
+				if(splitKey[0] === 'answer') {
+					var answerValue;
+					if(request.body[formFieldName].length === 0) {
+						if (splitKey[1] === '1') {
+							answerValue = 'yes';
+						} else if(splitKey[1] === '2') {
+							answerValue = 'no'
+						} else {
+							continue;
+						}
+					} else {
+						answerValue = request.body[formFieldName];
+					}
+
 					answers.push({
-						name: request.body[queryKey],
+						name: answerValue,
 						votes: 0
 					});
 				}
@@ -111,9 +130,13 @@ app.get('/:id/vote', function (request, response) {
 app.post('/:id/vote', function (request, response) {
 	var answerId = request.body.voteValue;
 	Answer.findById(answerId).then(function (answer) {
-		answer.increment('votes').then(function () {
-			response.redirect('/' + request.params.id + '/results');
-		});
+		if(answer !== null) {
+			answer.increment('votes').then(function () {
+				response.redirect('/' + request.params.id + '/results');
+			});
+		} else {
+			response.redirect('/' + request.params.id + '/vote');
+		}
 	});
 });
 

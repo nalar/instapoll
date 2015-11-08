@@ -2,8 +2,11 @@ extends layout
 
 block content
 	h2=question
-	form(action=voteUrl, method="post")
-		each answer in answers
-			input(name="voteValue", value=answer.id, type="radio")
-			label=answer.name
-		input(type="submit", value="vote")
+	div#voteDiv
+		form(action=voteUrl, method="post")
+			each answer in answers
+				div.radio
+					label
+						input.radio(name="voteValue", value=answer.id, type="radio")
+						|#{answer.name}
+			input.btn.btn-primary(type="submit", value="vote")

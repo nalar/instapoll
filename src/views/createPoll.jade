@@ -3,19 +3,33 @@ extends layout
 block content
 	h2 create new poll :3
 	form(id="createPoll", action="/createPoll" method="post")
-		input(name="question", autofocus=true, placeholder='boopiest or snootiest?')
-		input(name="answer1", placeholder='yes')
-		input(name="answer2", placeholder='no')
-		input(id="addNewAnswer", type="button", value="+")
-		input(type="submit")
+		.form-group
+			label Question
+			input.form-control(name="question", autofocus=true, placeholder='boopiest or snootiest?')
+		.form-group
+			label Answer #1
+			input.form-control(name="answer_1", placeholder='yes')
+		.form-group
+			label Answer #2
+			input.form-control(name="answer_2", placeholder='no')
+		.form-group
+			input.btn.btn-default(id="addNewAnswer", type="button", value="+")
+		.form-group
+			input.btn.btn-primary.btn-block(type="submit")
 
 	script.
 		var counter = 3;
-		var newAnswerButton = document.getElementById("addNewAnswer");
-		var pollForm = document.getElementById("createPoll");
+		var newAnswerButton = $("#addNewAnswer");
+		var pollForm = $("#createPoll");
 
-		newAnswerButton.onclick = function () {
-			var newAnswer = document.createElement("input");
-			newAnswer.name = "answer" + counter++;
-			pollForm.insertBefore(newAnswer, newAnswerButton);
-		};
+		newAnswerButton.click(function () {
+			var newLabel = $(document.createElement("label"));
+			var newAnswer = $(document.createElement("input"));
+
+			newLabel.html('Answer #' + counter);
+			newAnswer.addClass('form-control');
+			newAnswer.attr('name', "answer_" + counter++);
+
+			newLabel.insertBefore(newAnswerButton);
+			newAnswer.insertBefore(newAnswerButton);
+		});

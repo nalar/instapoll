@@ -1,9 +1,0 @@
-extends layout
-
-block content
-	h2 #{question}
-	form(action="/vote", method="post")
-		each answer in answers
-			input(name="voteValue", type="radio")
-			label #{answer}
-		input(type="submit", value="vote")

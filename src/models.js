@@ -9,20 +9,27 @@ var sequelize = new Sequelize('poll', 'jon', null, {
 });
 
 var Poll = sequelize.define('poll', {
-	question: { type: Sequelize.TEXT }
+	question: {type: Sequelize.TEXT}
 });
 
 var Answer = sequelize.define('answer', {
-	name: { type: Sequelize.TEXT },
-	votes: { type: Sequelize.INTEGER }
+	name: {type: Sequelize.TEXT},
+	votes: {type: Sequelize.INTEGER}
 });
 
+Poll.hasMany(Answer);
 Answer.belongsTo(Poll);
 
-exports.initialize = function (onComplete) {
+function initialize(onComplete) {
 	Poll.sync().then(function () {
-		Answer.sync().then(function() {
+		Answer.sync().then(function () {
 			onComplete();
 		});
 	});
+}
+
+module.exports = {
+	initialize: initialize,
+	Poll: Poll,
+	Answer: Answer
 };

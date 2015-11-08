@@ -1,4 +1,8 @@
 extends layout
 
 block content
-	p thanks
+	h2=question
+	each answer in answers
+		p name: #{answer.name}
+		p votes: #{answer.votes}
+	a(href=voteUrl) vote

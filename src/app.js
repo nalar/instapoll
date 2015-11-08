@@ -40,12 +40,12 @@ app.post('/createPoll', function (request, response) {
 		for (var formFieldName in request.body) {
 			if (request.body.hasOwnProperty(formFieldName)) {
 				var splitKey = formFieldName.split('_');
-				if(splitKey[0] === 'answer') {
+				if (splitKey[0] === 'answer') {
 					var answerValue;
-					if(request.body[formFieldName].length === 0) {
+					if (request.body[formFieldName].length === 0) {
 						if (splitKey[1] === '1') {
 							answerValue = 'yes';
-						} else if(splitKey[1] === '2') {
+						} else if (splitKey[1] === '2') {
 							answerValue = 'no'
 						} else {
 							continue;
@@ -92,26 +92,36 @@ app.get('/:id/results', function (request, response) {
 		}],
 		order: [[Answer, 'votes', 'DESC']]
 	}).then(function (poll) {
-		var answers = poll.answers.map(function (answer) {
-			return {
-				name: answer.name,
-				votes: answer.votes
-			}
-		});
+		if (poll === null) {
+			response.redirect('/');
+		} else {
+			var answers = poll.answers.map(function (answer) {
+				return {
+					name: answer.name,
+					votes: answer.votes
+				}
+			});
 
-		response.render('results', {
-			question: poll.question,
-			answers: answers,
-			voteUrl: '/' + poll.id + '/vote'
-		});
+			response.render('results', {
+				question: poll.question,
+				answers: answers,
+				voteUrl: '/' + poll.id + '/vote'
+			});
+		}
 	});
 });
 
 app.get('/:id/vote', function (request, response) {
 	var pollId = request.params.id;
-	Poll.findById(pollId).then(function (poll) {
-		Answer.findAll({where: {pollId: pollId}}).then(function (answerResults) {
-			var answers = answerResults.map(function (answer) {
+	Poll.findById(pollId, {
+		include: [{
+			model: Answer
+		}]
+	}).then(function (poll) {
+		if (poll === null) {
+			response.redirect('/');
+		} else {
+			var answers = poll.answers.map(function (answer) {
 				return {
 					name: answer.name,
 					id: answer.id
@@ -123,19 +133,19 @@ app.get('/:id/vote', function (request, response) {
 				answers: answers,
 				voteUrl: '/' + poll.id + '/vote'
 			});
-		});
+		}
 	});
 });
 
 app.post('/:id/vote', function (request, response) {
 	var answerId = request.body.voteValue;
 	Answer.findById(answerId).then(function (answer) {
-		if(answer !== null) {
+		if (answer === null) {
+			response.redirect('/' + request.params.id + '/vote');
+		} else {
 			answer.increment('votes').then(function () {
 				response.redirect('/' + request.params.id + '/results');
 			});
-		} else {
-			response.redirect('/' + request.params.id + '/vote');
 		}
 	});
 });

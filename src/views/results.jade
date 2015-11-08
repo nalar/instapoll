@@ -8,8 +8,12 @@ block content
 				td
 					h4=answer.name
 				td
-					if answer.votes === 1
-						h4 #{answer.votes} person
-					else
-						h4 #{answer.votes} people
+					- var person = answer.votes === 1 ? 'person' : 'people';
+					h4(id="answer_" + answer.id) #{answer.votes} #{person}
 	a.btn.btn-primary(href=voteUrl) vote
+	script.
+		var socket = io();
+		socket.on('vote', function (vote) {
+			var person = vote.value === 1 ? 'person' : 'people';
+			$('#answer_'+vote.id).text(vote.value + " " + person);
+		});

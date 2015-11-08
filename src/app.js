@@ -97,6 +97,7 @@ app.get('/:id/results', function (request, response) {
 		} else {
 			var answers = poll.answers.map(function (answer) {
 				return {
+					id: answer.id,
 					name: answer.name,
 					votes: answer.votes
 				}
@@ -144,6 +145,7 @@ app.post('/:id/vote', function (request, response) {
 			response.redirect('/' + request.params.id + '/vote');
 		} else {
 			answer.increment('votes').then(function () {
+				io.emit('vote', { id: answer.id, value: answer.votes });
 				response.redirect('/' + request.params.id + '/results');
 			});
 		}
@@ -181,5 +183,8 @@ app.use(function (err, req, res, next) {
 	});
 });
 
+app.setSocket = function (_io) {
+	io = _io;
+};
 
 module.exports = app;

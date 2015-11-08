@@ -129,9 +129,9 @@ app.get('/:id/vote', function (request, response) {
 			});
 
 			response.render('vote', {
+				pollId: poll.id,
 				question: poll.question,
-				answers: answers,
-				voteUrl: '/' + poll.id + '/vote'
+				answers: answers
 			});
 		}
 	});

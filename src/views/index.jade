@@ -1,5 +1,21 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+	h2 create new poll :3
+	form(id="createPoll", action="/createPoll" method="post")
+		input(name="question", autofocus=true, placeholder='boopiest or snootiest?')
+		input(name="answer1", placeholder='yes')
+		input(name="answer2", placeholder='no')
+		input(id="addNewAnswer", type="button", value="+")
+		input(type="submit")
+
+	script.
+		var counter = 3;
+		var newAnswerButton = document.getElementById("addNewAnswer");
+		var pollForm = document.getElementById("createPoll");
+
+		newAnswerButton.onclick = function () {
+			var newAnswer = document.createElement("input");
+			newAnswer.name = "answer" + counter++;
+			pollForm.insertBefore(newAnswer, newAnswerButton);
+		};

@@ -1,21 +1,21 @@
 extends layout
 
 block content
-	h2 create new poll :3
+	h2 create new poll
 	form(id="createPoll", action="/createPoll" method="post")
 		div.form-group
-			label Question
+			label question
 			input.form-control(name="question", autofocus=true, placeholder='boopiest or snootiest?')
 		div.form-group
-			label Answer #1
+			label answer #1
 			input.form-control(name="answer_1", placeholder='yes')
 		div.form-group
-			label Answer #2
+			label answer #2
 			input.form-control(name="answer_2", placeholder='no')
 		div#addNewAnswer.form-group
 			input.btn.btn-default(type="button", value="+")
 		div.form-group
-			input.btn.btn-primary.btn-block(type="submit")
+			input.btn.btn-primary.btn-block(type="submit", value="submit")
 
 	script.
 		var counter = 3;
@@ -28,7 +28,7 @@ block content
 			newDiv.insertBefore(addAnswerDiv);
 
 			var newLabel = $(document.createElement("label"));
-			newLabel.html('Answer #' + counter);
+			newLabel.html('answer #' + counter);
 			newDiv.append(newLabel);
 
 			var newAnswer = $(document.createElement("input"));

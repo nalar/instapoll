@@ -2,7 +2,7 @@ extends layout
 
 block content
 	h2=question
-	form(action = '/#{pollId}/vote', method = "post", id = 'votingForm')
+	form(action = '/#{pollId}', method = "post", id = 'votingForm')
 		table.table
 			each answer in answers
 				tr

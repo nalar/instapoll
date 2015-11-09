@@ -1,8 +1,6 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var models = require('./models');
@@ -10,28 +8,25 @@ var Answer = models.Answer;
 var Poll = models.Poll;
 
 var app = express();
+var io;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, '../public')));
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('/', function (request, response) {
-	response.render('createPoll');
+	response.render('index');
 });
 
-app.post('/createPoll', function (request, response) {
+app.post('/', function (request, response) {
 	var question = request.body.question;
 	if (question.length === 0) {
-		response.render('createPoll', {error: "please enter a question"});
+		response.render('index', {error: "please enter a question:"});
 		return;
 	}
 
@@ -77,14 +72,14 @@ app.post('/createPoll', function (request, response) {
 			}).then(function () {
 				answersToCreate--;
 				if (answersToCreate === 0) {
-					response.redirect('/' + poll.id + '/results');
+					response.redirect('/' + poll.id);
 				}
 			})
 		});
 	});
 });
 
-app.get('/:id/results', function (request, response) {
+app.get('/:id', function (request, response) {
 	var pollId = request.params.id;
 	Poll.findById(pollId, {
 		include: [{
@@ -112,15 +107,15 @@ app.get('/:id/results', function (request, response) {
 	});
 });
 
-app.post('/:id/vote', function (request, response) {
+app.post('/:id', function (request, response) {
 	var answerId = request.body.voteValue;
 	Answer.findById(answerId).then(function (answer) {
 		if (answer === null) {
-			response.redirect('/' + request.params.id + '/vote');
+			response.redirect('/' + request.params.id);
 		} else {
 			answer.increment('votes').then(function () {
 				io.emit('vote', {id: answer.id, value: answer.votes});
-				response.redirect('/' + request.params.id + '/results');
+				response.redirect('/' + request.params.id);
 			});
 		}
 	});

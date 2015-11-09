@@ -2,7 +2,7 @@ extends layout
 
 block content
 	h2 create new poll
-	form(id="createPoll", action="/createPoll" method="post")
+	form(id="createPoll", action="/" method="post")
 		div.form-group
 			if error
 				div.alert.alert-danger(role="alert")

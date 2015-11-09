@@ -104,32 +104,6 @@ app.get('/:id/results', function (request, response) {
 			});
 
 			response.render('results', {
-				question: poll.question,
-				answers: answers,
-				voteUrl: '/' + poll.id + '/vote'
-			});
-		}
-	});
-});
-
-app.get('/:id/vote', function (request, response) {
-	var pollId = request.params.id;
-	Poll.findById(pollId, {
-		include: [{
-			model: Answer
-		}]
-	}).then(function (poll) {
-		if (poll === null) {
-			response.redirect('/');
-		} else {
-			var answers = poll.answers.map(function (answer) {
-				return {
-					name: answer.name,
-					id: answer.id
-				}
-			});
-
-			response.render('vote', {
 				pollId: poll.id,
 				question: poll.question,
 				answers: answers

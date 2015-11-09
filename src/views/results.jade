@@ -2,18 +2,30 @@ extends layout
 
 block content
 	h2=question
-	table.table
-		each answer in answers
-			tr
-				td
-					h4=answer.name
-				td
-					- var person = answer.votes === 1 ? 'person' : 'people';
-					h4(id="answer_" + answer.id) #{answer.votes} #{person}
-	a.btn.btn-primary(href=voteUrl) vote
+	form(action = '/#{pollId}/vote', method = "post", id = 'votingForm')
+		table.table
+			each answer in answers
+				tr
+					td.voteButton
+						button.btn.btn-primary(name="voteValue", value=answer.id, type="submit") Vote!
+					td
+						h4=answer.name
+					td
+						- var person = answer.votes === 1 ? 'person' : 'people';
+						h4(id="answer_" + answer.id) #{answer.votes} #{person}
+	a.btn.btn-default(href='/') home
+
 	script.
 		var socket = io();
 		socket.on('vote', function (vote) {
 			var person = vote.value === 1 ? 'person' : 'people';
-			$('#answer_'+vote.id).text(vote.value + " " + person);
+			$('#answer_' + vote.id).text(vote.value + " " + person);
 		});
+
+		var form = $('#votingForm');
+		form.submit(function () {
+			$.cookie('#{question}_#{pollId}', true, {expires: 1});
+		});
+		if ($.cookie('#{question}_#{pollId}') === "true") {
+			form.find(":input").hide();
+		}

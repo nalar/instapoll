@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var app = require('./app');
 var models = require('./models');
-var debug = require('debug')('autopoll:server');
+var debug = require('debug')('instapoll:server');
 var http = require('http');
 
 var port = normalizePort(process.env.INSTAPOLL_PORT || '3000');

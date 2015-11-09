@@ -4,8 +4,14 @@ block content
 	h2 create new poll
 	form(id="createPoll", action="/createPoll" method="post")
 		div.form-group
-			label question
-			input.form-control(name="question", autofocus=true, placeholder='boopiest or snootiest?')
+			if error
+				div.alert.alert-danger(role="alert")
+					label #{error}
+					input.form-control(name="question", autofocus=true, placeholder='enter a question!')
+			else
+				label question
+				input.form-control(name="question", autofocus=true, placeholder='enter a question!')
+
 		div.form-group
 			label answer #1
 			input.form-control(name="answer_1", placeholder='yes')

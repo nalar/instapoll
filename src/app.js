@@ -31,7 +31,7 @@ app.get('/', function (request, response) {
 app.post('/createPoll', function (request, response) {
 	var question = request.body.question;
 	if (question.length === 0) {
-		response.redirect('/');
+		response.render('createPoll', {error: "please enter a question"});
 		return;
 	}
 
@@ -119,7 +119,7 @@ app.post('/:id/vote', function (request, response) {
 			response.redirect('/' + request.params.id + '/vote');
 		} else {
 			answer.increment('votes').then(function () {
-				io.emit('vote', { id: answer.id, value: answer.votes });
+				io.emit('vote', {id: answer.id, value: answer.votes});
 				response.redirect('/' + request.params.id + '/results');
 			});
 		}

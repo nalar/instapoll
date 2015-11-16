@@ -81,6 +81,11 @@ app.post('/', function (request, response) {
 
 app.get('/:id', function (request, response) {
 	var pollId = request.params.id;
+	if (!isInteger(pollId)) {
+		response.sendStatus(404);
+		return;
+	}
+
 	Poll.findById(pollId, {
 		include: [{
 			model: Answer
@@ -155,5 +160,11 @@ app.use(function (err, req, res, next) {
 app.setSocket = function (_io) {
 	io = _io;
 };
+
+function isInteger(value) {
+	return !isNaN(value)
+		&& parseInt(Number(value)) == value
+		&& !isNaN(parseInt(value, 10));
+}
 
 module.exports = app;

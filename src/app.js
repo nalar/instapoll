@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+var Promise = require('sequelize').Promise;
 
 var models = require('./models');
 var Answer = models.Answer;
@@ -37,8 +38,7 @@ app.post('/', function (request, response) {
 			&& request.body[formFieldName].length !== 0) {
 
 			answers.push({
-				name: request.body[formFieldName],
-				votes: 0
+				name: request.body[formFieldName]
 			});
 		}
 	}
@@ -46,19 +46,14 @@ app.post('/', function (request, response) {
 	Poll.create({
 		question: question
 	}).then(function (poll) {
-		var answersToCreate = answers.length;
-
-		answers.forEach(function (answer) {
-			Answer.create({
+		Promise.all(answers.map(function (answer) {
+			return Answer.create({
 				name: answer.name,
-				votes: answer.votes,
+				votes: 0,
 				pollId: poll.id
-			}).then(function () {
-				answersToCreate--;
-				if (answersToCreate === 0) {
-					response.redirect('/' + poll.id);
-				}
-			})
+			});
+		})).then(function () {
+			response.redirect('/' + poll.id);
 		});
 	});
 });

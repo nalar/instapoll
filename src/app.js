@@ -30,34 +30,18 @@ app.post('/', function (request, response) {
 		return;
 	}
 
-	var answers = (function () {
-		var answers = [];
-		for (var formFieldName in request.body) {
-			if (request.body.hasOwnProperty(formFieldName)) {
-				var splitKey = formFieldName.split('_');
-				if (splitKey[0] === 'answer') {
-					var answerValue;
-					if (request.body[formFieldName].length === 0) {
-						if (splitKey[1] === '1') {
-							answerValue = 'yes';
-						} else if (splitKey[1] === '2') {
-							answerValue = 'no'
-						} else {
-							continue;
-						}
-					} else {
-						answerValue = request.body[formFieldName];
-					}
+	var answers = [];
+	for (var formFieldName in request.body) {
+		if (request.body.hasOwnProperty(formFieldName)
+			&& formFieldName.indexOf("answer") !== -1
+			&& request.body[formFieldName].length !== 0) {
 
-					answers.push({
-						name: answerValue,
-						votes: 0
-					});
-				}
-			}
+			answers.push({
+				name: request.body[formFieldName],
+				votes: 0
+			});
 		}
-		return answers;
-	})();
+	}
 
 	Poll.create({
 		question: question

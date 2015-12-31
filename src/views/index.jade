@@ -14,10 +14,10 @@ block content
 
 		div.form-group
 			label answer #1
-			input.form-control(name="answer_1", placeholder='yes')
+			input#answer_1.form-control(name="answer_1", placeholder='yes')
 		div.form-group
 			label answer #2
-			input.form-control(name="answer_2", placeholder='no')
+			input#answer_2.form-control(name="answer_2", placeholder='no')
 		div#addNewAnswer.form-group
 			input.btn.btn-default(type="button", value="+")
 		div.form-group
@@ -27,6 +27,18 @@ block content
 		var counter = 3;
 		var addAnswerDiv = $("#addNewAnswer");
 		var pollForm = $("#createPoll");
+
+		pollForm.submit(function () {
+			var answer1 = $('#answer_1');
+			if(answer1.val().length === 0) {
+				answer1.val("yes");
+			}
+
+			var answer2 = $('#answer_2');
+			if(answer2.val().length === 0) {
+				answer2.val("no");
+			}
+		});
 
 		addAnswerDiv.click(function () {
 			var newDiv = $(document.createElement("div"));

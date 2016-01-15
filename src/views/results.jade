@@ -24,8 +24,8 @@ block content
 
 		var form = $('#votingForm');
 		form.submit(function () {
-			$.cookie("#{question}_#{pollId}", true, {expires: 1});
+			$.cookie('#{question}_#{pollId}', true, {expires: 1});
 		});
-		if ($.cookie("#{question}_#{pollId}") === "true") {
+		if ($.cookie('#{question}_#{pollId}') === "true") {
 			form.find(":input").hide();
 		}
